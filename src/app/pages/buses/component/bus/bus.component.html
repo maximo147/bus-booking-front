@@ -1,0 +1,174 @@
+<div class="col-sm-4"></div>
+<div class="col-sm-12">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="openModal(content)">
+            <i class="mdi mdi-plus mr-1"></i>Nuevo</button>
+    </div>
+</div><!-- end col-->
+
+<div class="row mb-2">
+    <div class="table-responsive mb-0">
+        <table class="table table-centered table-nowrap">
+            <thead class="table-light">
+                <tr>
+                    <th class="align-middle">ID</th>
+                    <th class="align-middle">Placa</th>
+                    <th class="align-middle">Marca</th>
+                    <th class="align-middle">Operador</th>
+                    <th class="align-middle">Estado</th>
+                    <th class="align-middle">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of busArray; let i=index;" id="o_{{data.id}}">
+                    <td>
+                        <a href="javascript: void(0);" class="text-body fw-bold">{{ i+1 }}</a>
+                    </td>
+                    <td>{{data.plate}}</td>
+                    <td>{{data.brand}}</td>
+                    <td>{{data.operatorName}}</td>
+                    <td class="align-middle"><span
+                            [ngClass]="data.state ? 'badge bg-success' : 'badge bg-danger'">{{data.state}}</span></td>
+                    <td>
+                        <div class="d-flex gap-3">
+                            <a href="javascript:void(0);" class="text-success"
+                                (click)="openModal(content, data.id_bus)"><i
+                                    class="mdi mdi-pencil font-size-18"></i></a>
+                            <a href="javascript:void(0);" class="text-danger" (click)="deleteAlert(data.id_bus)"><i
+                                    class="mdi mdi-delete font-size-18"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+            <div class="col-sm-12 col-md-5">
+
+            </div>
+
+        </div>
+        <!-- Pagination -->
+
+    </div>
+</div>
+
+
+<ng-template #content bus="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
+    </div>
+    <form [formGroup]="formBus">
+        <div class="modal-body">
+
+            <input class="form-control" type="hidden" formControlName="id_bus">
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Placa</label>
+                        <input class="form-control" type="text" placeholder="Ingrese placa" formControlName="plate">
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Nombre de Operador</label>
+                        <input class="form-control" type="text" placeholder="Ingrese nombre operador"
+                            formControlName="operatorName">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Dni de Operador</label>
+                        <input class="form-control" type="text" placeholder="Ingrese costo adicional"
+                            formControlName="operatorDni">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Marca</label>
+                        <input class="form-control" type="text" placeholder="Ingrese marca" formControlName="brand">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Número de asientos</label>
+                        <input class="form-control" type="number" placeholder="Ingrese número asientos" min="20" max="35" value="20"
+                            formControlName="minSeat">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row mb-2">
+                <div class="col-lg-4">
+                    <div>
+                        <label class="form-label">Cantidad Asientos Turista</label>
+                        <input class="form-control" type="number" placeholder="Ingrese cantidad"
+                            formControlName="amountTourist">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div>
+                        <label class="form-label">Cantidad Asientos Ejecutivo</label>
+                        <input class="form-control" type="number" placeholder="Ingrese cantidad"
+                            formControlName="amountExecutive">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div>
+                        <label class="form-label">Cantidad Asientos Premium</label>
+                        <input class="form-control" type="number" placeholder="Ingrese cantidad"
+                            formControlName="amountPremium">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6" *ngIf="!save">
+                <div>
+                    <label class="form-label">Estado</label>
+                    <select id="formrow-inputState" class="form-control" formControlName="state"
+                        (change)="onChangeSelected($event)">
+                        <option [value]="true">Activo</option>
+                        <option [value]="false" selected>Inactivo</option>
+                    </select>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+
+        <div class="modal-footer">
+            <div class="hstack gap-2 justify-content-end">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                    (click)="modal.close('Close click')">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-success" id="add-btn" (click)="saveBus()"
+                    [disabled]="formBus.invalid && formBus.touched">
+                    Registrar
+                </button>
+            </div>
+        </div>
+    </form>
+</ng-template>

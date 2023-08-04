@@ -1,0 +1,129 @@
+<div class="col-sm-4"></div>
+<div class="col-sm-12">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="openModal(content)">
+            <i class="mdi mdi-plus mr-1"></i>Nuevo</button>
+    </div>
+</div><!-- end col-->
+
+<div class="row mb-2">
+    <div class="table-responsive mb-0">
+        <table class="table table-centered table-nowrap">
+            <thead class="table-light">
+                <tr>
+                    <th class="align-middle">ID</th>
+                    <th class="align-middle">Tipo de Asiento</th>
+                    <th class="align-middle">Ruta</th>
+                    <th class="align-middle">Ocupado</th>
+                    <th class="align-middle">Estado</th>
+                    <th class="align-middle">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of typeSeatDetailArray; let i=index;" id="o_{{data.id}}">
+                    <td>
+                        <a href="javascript: void(0);" class="text-body fw-bold">{{ i+1 }}</a>
+                    </td>
+                    <td>{{data.idTypeSeat.name}}</td>
+                    <td><span>{{data.idItinerary.cityOrigin}}</span> - <span>{{data.idItinerary.cityDestination}}</span></td>
+                    <td class="align-middle"><span [ngClass]="data.busy === 'LIBRE' ? 'badge bg-success' : 'badge bg-danger'">{{data.busy}}</span></td>
+                    <td class="align-middle"><span [ngClass]="data.state ? 'badge bg-success' : 'badge bg-danger'">{{data.state}}</span></td>
+                    <td>
+                        <div class="d-flex gap-3">
+                            <a href="javascript:void(0);" class="text-success"
+                                (click)="openModal(content, data.id_type_seat_detail)"><i
+                                    class="mdi mdi-pencil font-size-18"></i></a>
+                            <a href="javascript:void(0);" class="text-danger"
+                                (click)="deleteAlert(data.id_type_seat_detail)"><i
+                                    class="mdi mdi-delete font-size-18"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+            <div class="col-sm-12 col-md-5">
+
+            </div>
+
+        </div>
+        <!-- Pagination -->
+
+    </div>
+</div>
+
+
+<ng-template #content typeSeatDetail="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
+    </div>
+    <form [formGroup]="formTypeSeatDetail">
+        <div class="modal-body">
+
+            <input class="form-control" type="hidden" formControlName="id_type_seat_detail">
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Tipo de Asiento</label>
+                        <select id="formrow-inputState" class="form-select" formControlName="idTypeSeat">
+                            <option value="" selected>Elija una opción</option>
+                            <option *ngFor="let item of typeSeats" [value]="item.id_type_seat">{{item.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Itinearios</label>
+                        <select id="formrow-inputState" class="form-select" formControlName="idItinerary">
+                            <option value="" selected>Elija una opción</option>
+                            <option *ngFor="let item of itinerarys" [value]="item.id_itinerary">{{item.id_itinerary}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+
+
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Ocupado</label>
+                        <select id="formrow-inputState" class="form-select" formControlName="busy">
+                            <option value="">Elija una opción</option>
+                            <option value="OCUPADO">Ocupado</option>
+                            <option value="LIBRE">Libre</option>
+                            <option value="PENDIENTE">Pendiente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6" *ngIf="!save">
+                    <div>
+                        <label class="form-label">Estado</label>
+                        <select id="formrow-inputState" class="form-select" formControlName="state">
+                            <option value="" disabled selected>Elija una opción</option>
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div class="modal-footer">
+            <div class="hstack gap-2 justify-content-end">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                    (click)="modal.close('Close click')">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-success" id="add-btn" (click)="saveTypeSeatDetail()"
+                    [disabled]="formTypeSeatDetail.invalid && formTypeSeatDetail.touched">
+                    Registrar
+                </button>
+            </div>
+        </div>
+    </form>
+</ng-template>

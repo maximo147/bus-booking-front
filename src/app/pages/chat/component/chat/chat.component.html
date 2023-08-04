@@ -1,0 +1,147 @@
+<div class="container-fluid">
+
+
+    <div class="d-lg-flex">
+        <div class="hat-leftsidebar me-lg-4">
+            <div class="">
+                <div class="py-4 border-bottom">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0 align-self-center me-3">
+                            <img src="assets/images/users/avatar-1.jpg" class="avatar-xs rounded-circle" alt="">
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="font-size-15 mb-1">{{username | titlecase}}</h5>
+                            <p class="text-muted mb-0"><i class="mdi mdi-circle text-success align-middle me-1"></i>
+                                Activo</p>
+                        </div>
+
+                        <div ngbDropdown>
+                            <div class="dropdown chat-noti-dropdown active">
+                                <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
+                                    <i class="bx bx-bell bx-tada"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                                    <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                    <a class="dropdown-item" href="javascript: void(0);">Another action</a>
+                                    <a class="dropdown-item" href="javascript: void(0);">Something else here</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-box chat-search-box py-4">
+                    <div class="position-relative">
+                        <input type="text" class="form-control" placeholder="Search..." id="searchContact"
+                            autocomplete="off">
+                        <i class="bx bx-search-alt search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="chat-leftsidebar-nav">
+                    <ul ngbNav #nav="ngbNav" [activeId]="1" class="nav-pills nav-justified">
+                        <li [ngbNavItem]="1">
+                            <a ngbNavLink>
+                                <i class="bx bx-group font-size-20 d-sm-none"></i>
+                                <span class="d-none d-sm-block">Grupos</span>
+                            </a>
+                            <ng-template ngbNavContent>
+                                <h5 class="font-size-14 mb-3">Grupos</h5>
+                                <ul class="list-unstyled chat-list">
+                                    <li>
+                                        <a href="javascript: void(0);">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar-xs">
+                                                        <span
+                                                            class="avatar-title rounded-circle bg-primary bg-soft text-primary">
+                                                            G
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex-grow-1">
+                                                    <h5 class="font-size-14 mb-0">General</h5>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </ng-template>
+                        </li>
+                    </ul>
+                    <div [ngbNavOutlet]="nav" class="py-4"></div>
+                </div>
+            </div>
+        </div>
+        <div class="w-100 user-chat">
+            <div class="card">
+                <div class="p-4 border-bottom">
+                    <div class="row">
+                        <div class="col-md-4 col-9">
+                            <h5 class="font-size-15 mb-1">General</h5>
+                            <p class="text-muted mb-0"><i class="mdi mdi-circle text-success align-middle me-1"></i>
+                                Activo ahora</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="chat-conversation p-3">
+                        <ngx-simplebar style="height: 470px;" #scrollRef>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <div class="chat-day-title">
+                                        <span class="title">Hoy</span>
+                                    </div>
+                                </li>
+                                <li *ngFor="let data of chat$ | async" [ngClass]="{'right': data.user === username}">
+                                    <div class="conversation-list">
+                                        <div class="dropdown" ngbDropdown>
+
+                                            <a class="dropdown-toggle" href="javascript: void(0);" role="button"
+                                                ngbDropdownToggle>
+                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                            </a>
+                                        </div>
+                                        <div class="ctext-wrap">
+                                            <div class="conversation-name">{{data.user | titlecase}}</div>
+                                            <p>
+                                                {{ data.message }}
+                                            </p>
+                                            <p class="chat-time mb-0"><i class="bx bx-time-five align-middle me-1"></i>
+                                                {{data.date}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </ngx-simplebar>
+                    </div>
+                    <div class="p-3 chat-input-section">
+                        <div *ngIf="typing$ | async" style="text-align: center; height: 40px;">
+                            <div *ngIf="valueRecieve.value">
+                                {{valueRecieve.user}} está escribiendo...
+                            </div>
+                        </div>
+                        <form (ngSubmit)="sendMsg()" [formGroup]="formData" class="row">
+                            <div class="col">
+                                <div class="position-relative">
+                                    <input type="text" class="form-control chat-input" placeholder="Enter Message..."
+                                        formControlName="message" (keyup)="nowriting()">
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary btn-rounded chat-send w-md"><span
+                                        class="d-none d-sm-inline-block me-2">Send</span> <i
+                                        class="mdi mdi-send"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+
+</div>

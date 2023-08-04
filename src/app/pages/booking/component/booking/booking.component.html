@@ -1,0 +1,217 @@
+<div class="col-sm-4"></div>
+<div class="col-sm-12">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="openModal(content)">
+            <i class="mdi mdi-plus mr-1"></i>Nuevo</button>
+    </div>
+</div><!-- end col-->
+
+<div class="row mb-2">
+    <div class="table-responsive mb-0">
+        <table class="table table-centered table-nowrap">
+            <thead class="table-light">
+                <tr>
+                    <th class="align-middle">ID</th>
+                    <th class="align-middle">Origen</th>
+                    <th class="align-middle">Destino</th>
+                    <th class="align-middle">Bus</th>
+                    <th class="align-middle">Fecha - Hora Salida</th>
+                    <th class="align-middle">Fecha - Hora Llegada</th>
+                    <th class="align-middle">Status</th>
+                    <th class="align-middle">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of itineraryArray; let i=index;" id="o_{{data.id}}">
+                    <td>
+                        <a href="javascript: void(0);" class="text-body fw-bold">{{ i+1 }}</a>
+                    </td>
+                    <td>{{data.cityOrigin}}</td>
+                    <td>{{data.cityDestination}}</td>
+                    <td>{{data.idBus.plate}}</td>
+                    <td><span>{{data.dateExit}}</span> - <span>{{data.hourExit}}</span></td>
+                    <td><span>{{data.dateArrival}}</span> - <span>{{data.hourArrival}}</span></td>
+                    <td>{{data.status}}</td>
+                    <td>
+                        <div class="d-flex gap-3">
+                            <a href="javascript:void(0);" class="text-success"
+                                (click)="openModal(content, data.id_itinerary)"><i
+                                    class="mdi mdi-pencil font-size-18"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+            <div class="col-sm-12 col-md-5">
+
+            </div>
+
+        </div>
+        <!-- Pagination -->
+
+    </div>
+</div>
+
+
+<ng-template #content itinerary="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
+    </div>
+    <form [formGroup]="formItinerary">
+        <div class="modal-body">
+
+            <input class="form-control" type="hidden" formControlName="id_itinerary">
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Ciudad Origen</label>
+                        <select id="formrow-inputState" class="form-select" formControlName="cityOrigin">
+                            <option value="" disabled selected>Seleccione una ciudad</option>
+                            <option *ngFor="let item of ciudades">{{item}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Ciudad Destino</label>
+                        <select id="formrow-inputState" class="form-select" formControlName="cityDestination">
+                            <option value="" disabled selected>Seleccione una ciudad</option>
+                            <option *ngFor="let item of ciudades">{{item}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Costo</label>
+                        <input class="form-control" type="text" placeholder="Ingrese costo" formControlName="cost">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Bus</label>
+                        <select id="formrow-inputState" class="form-select" formControlName="idBus">
+                            <option value="" disabled selected>Seleccione una ciudad</option>
+                            <option *ngFor="let item of buses" [value]="item.id_bus">{{item.plate}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <label>Fecha Inicio - Fecha Llegada</label>
+
+                    <ng-template #t let-date let-focused="focused">
+                        <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+                            [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
+                            (ngModel)="fechaTotal" (mouseleave)="hoveredDate = null">
+                            {{ date.day }}
+                        </span>
+                    </ng-template>
+
+                    <input type="text" class="form-control date" (click)="hidden=!hidden" name="daterange" id="rango"
+                        autocomplete="off" />
+
+                    <ngb-datepicker #dp (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
+                        outsideDays="hidden" [hidden]="hidden">
+                    </ngb-datepicker>
+                </div>
+                <div class="col-lg-3">
+
+                    <div class="mb-3">
+                        <label class="form-label">Hora Inicio</label>
+                        <div class="input-group" id="timepicker-input-group1">
+                            <input class="form-control flatpickr-input" type="text" mwlFlatpickr [noCalendar]="true"
+                                (change)="hourExit($event)" [enableTime]="true" [dateFormat]="'H:i'"
+                                formControlName="hourExit">
+                            <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-3">
+                    <div class="mb-3">
+                        <label class="form-label">Hora Llegada</label>
+                        <div class="input-group" id="timepicker-input-group1">
+                            <input class="form-control flatpickr-input" type="text" mwlFlatpickr [noCalendar]="true"
+                                (change)="hourArrival($event)" [enableTime]="true" [dateFormat]="'H:i'"
+                                formControlName="hourArrival">
+                            <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-lg-4">
+                    <label>Turista</label>
+                    <div class="row">
+                        <div *ngFor="let item of seatTypeDetails;let i=index;">
+                            <div *ngIf="item.idTypeSeat.name=='Turista'" class="form-switch">
+                                <input style="border: 1px solid #c5c4c4; background-color: rgb(87, 248, 127); padding: 7px; width: 30px;margin-right: 5px;"
+                                    [checked]="item.busy==='OCUPADO'||item.busy==='PENDIENTE'"
+                                    [disabled]="item.busy==='OCUPADO'||item.busy==='PENDIENTE'" class="form-check-input"
+                                    type="checkbox" id="flexSwitchCheckChecked" (change)="changeStateSeat($event, item)">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">{{i}}</label>
+                            </div>
+                            <div *ngIf="seatTypeDetails.length-1==i"><span>S./{{item.idTypeSeat.costAdditional}}</span></div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <label>Ejecutivo</label>
+                    <div class="row">
+                        <div *ngFor="let item of seatTypeDetails;let i=index;">
+                            <div *ngIf="item.idTypeSeat.name=='Ejecutivo'" class="form-switch">
+                                <input style="border: 1px solid #c5c4c4; background-color: rgb(79, 120, 255); padding: 7px; width: 30px;margin-right: 5px;"
+                                    [checked]="item.busy==='OCUPADO'||item.busy==='PENDIENTE'"
+                                    [disabled]="item.busy==='OCUPADO'||item.busy==='PENDIENTE'" class="form-check-input"
+                                    type="checkbox" id="flexSwitchCheckChecked" (change)="changeStateSeat($event, item)">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">{{i}}</label>
+                            </div>
+                            <div *ngIf="seatTypeDetails.length-1==i"><span>S./{{item.idTypeSeat.costAdditional}}</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <label>Premium</label>
+                    <div class="row">
+                        <div *ngFor="let item of seatTypeDetails;let i=index;">
+                            <div *ngIf="item.idTypeSeat.name=='Premium'" class="form-switch">
+                                <input style="border: 1px solid #c5c4c4; background-color: rgb(192, 206, 0); padding: 7px; width: 30px;margin-right: 5px;"
+                                    [checked]="item.busy==='OCUPADO'||item.busy==='PENDIENTE'"
+                                    [disabled]="item.busy==='OCUPADO'||item.busy==='PENDIENTE'" class="form-check-input"
+                                    type="checkbox" id="flexSwitchCheckChecked" (change)="changeStateSeat($event, item)">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">{{i}}</label>
+                            </div>
+                            <div *ngIf="seatTypeDetails.length-1==i"><span>S./{{item.idTypeSeat.costAdditional}}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="modal-footer">
+            <div class="hstack gap-2 justify-content-end">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                    (click)="modal.close('Close click')">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-success" id="add-btn" (click)="addCart()"
+                    [disabled]="formItinerary.invalid && formItinerary.touched">
+                    Agregar al carrito
+                </button>
+            </div>
+        </div>
+    </form>
+</ng-template>

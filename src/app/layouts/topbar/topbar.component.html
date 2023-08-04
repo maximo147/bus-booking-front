@@ -1,0 +1,284 @@
+<header id="page-topbar">
+  <div class="navbar-header">
+    <div class="d-flex">
+      <!-- LOGO -->
+      <div class="navbar-brand-box">
+        <a routerLink="/" class="logo logo-dark">
+          <span class="logo-sm">
+            <img src="assets/images/logo.svg" alt="" height="22">
+          </span>
+          <span class="logo-lg">
+            <img src="assets/images/logo-dark.png" alt="" height="17">
+          </span>
+        </a>
+
+        <a routerLink="/" class="logo logo-light">
+          <span class="logo-sm">
+            <img src="assets/images/logo-light.svg" alt="" height="22">
+          </span>
+          <span class="logo-lg">
+            <img src="assets/images/logo-light.png" alt="" height="19">
+          </span>
+        </a>
+      </div>
+
+      <button type="button" class="btn btn-sm px-3 font-size-16 header-item" id="vertical-menu-btn"
+        (click)="toggleMobileMenu($event)">
+        <i class="fa fa-fw fa-bars"></i>
+      </button>
+
+    </div>
+
+    <div class="d-flex">
+      <div class="d-flex d-inline-block dropdown align-items-center">
+        <div class="dropdown d-none d-lg-inline-block ms-1 h-100 align-items-center">
+          Carrito de compras se liberará en: {{seconds}}
+        </div>
+      </div>
+
+
+      <div class="dropdown d-none d-lg-inline-block ms-1">
+        <button type="button" class="btn header-item noti-icon" data-toggle="fullscreen" (click)="fullscreen()">
+          <i class="bx bx-fullscreen"></i>
+        </button>
+      </div>
+
+      <div class="dropdown d-inline-block" ngbDropdown>
+
+
+        <button type="button" class="btn header-item noti-icon" id="page-header-notifications-dropdown"
+          ngbDropdownToggle>
+          <i class="bx bx-cart bx-tada"></i>
+          <span class="badge bg-danger rounded-pill">{{data.length}}</span>
+        </button>
+
+
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+          aria-labelledby="page-header-notifications-dropdown" ngbDropdownMenu>
+          <div class="p-3">
+            <div class="row align-items-center">
+              <div class="col">
+                <h6 class="m-0">{{ 'HEADER.NOTIFICATIONS.TITLE' | translate}} </h6>
+              </div>
+              <div class="col-auto">
+                <a href="javascript: void(0);" class="small">{{ 'HEADER.NOTIFICATIONS.VIEW_ALL' | translate}}</a>
+              </div>
+            </div>
+          </div>
+          <ngx-simplebar style="position: relative; height: 230px;">
+            <a *ngFor="let data of cart$ | async" class="text-reset notification-item p-2">
+              <div class="d-flex">
+                <div class="avatar-xs mr-2">
+                  <span class="avatar-title bg-primary rounded-circle font-size-12">
+                    <i class="bx bx-cart"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 ml-2">
+                  <h6 class="mb-1">{{data.idItinerary.cityOrigin}} - {{data.idItinerary.cityDestination}}</h6>
+                  <div class="font-size-12 text-muted">
+                    <p class="mb-1">
+                      Asiento {{data.idTypeSeatDetail.idTypeSeat.name}}:
+                      <span>{{data.idItinerary.cost}}</span>
+                      +
+                      <span>{{data.idTypeSeatDetail.idTypeSeat.costAdditional}}</span>
+                      <span>= S./{{data.idItinerary.cost + data.idTypeSeatDetail.idTypeSeat.costAdditional}}</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="btn btn-light" (click)="deleteItemCart(data.id_booking_details)">x</div>
+              </div>
+            </a>
+          </ngx-simplebar>
+          <div>
+            <span>
+              <button class="btn btn-primary w-100" (click)="payModal(content)">Pagar</button>
+            </span>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="dropdown d-inline-block" ngbDropdown>
+        <button type="button" class="btn header-item" ngbDropdownToggle id="page-header-user-dropdown">
+          <img class="rounded-circle header-profile-user" src="assets/images/users/perfil.PNG" alt="Header Avatar">
+          <span class="d-none d-xl-inline-block ms-1">{{name}}</span>
+          <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+          <!-- item-->
+          <a class="dropdown-item text-danger" href="javascript: void(0);" (click)="logout()"><i
+              class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
+            {{ 'HEADER.LOGIN.LOGOUT' | translate}}</a>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+</header>
+
+
+
+
+<ng-template #content itinerary="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel"></h5>
+  </div>
+  <form>
+    <div class="modal-body">
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-centered mb-0 table-nowrap align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Ruta</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Costo Adicional</th>
+                        <th colspan="2">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let data of cart$ | async">
+                        <td>
+                          <h6 class="mb-1">{{data.idItinerary.cityOrigin}} - {{data.idItinerary.cityDestination}}</h6>
+                        </td>
+                        <td>
+                          <span>{{data.idTypeSeatDetail.idTypeSeat.name}}</span>
+                        </td>
+                        <td>
+                          <span>S./{{data.idItinerary.cost}}</span>
+                        </td>
+                        <td>
+                          <span>S./{{data.idTypeSeatDetail.idTypeSeat.costAdditional}}</span>
+                        </td>
+                        <td>
+                          <span>S./{{data.idItinerary.cost +
+                            data.idTypeSeatDetail.idTypeSeat.costAdditional}}</span>
+                        </td>
+                        <td>
+                          <div class="btn btn-light" (click)="deleteItemCart(data.id_booking_details)">x</div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row mt-4">
+                </div> <!-- end row-->
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title mb-4">Detalle Tarjeta</h5>
+
+                <div class="card bg-primary text-white visa-card mb-0">
+                  <div class="card-body">
+                    <div>
+                      <i class="bx bxl-visa visa-pattern"></i>
+
+                      <div class="float-end">
+                        <i class="bx bxl-visa visa-logo display-3"></i>
+                      </div>
+
+                      <div>
+                        <i class="bx bx-chip h1 text-warning"></i>
+                      </div>
+                    </div>
+
+                    <div class="row mt-5">
+                      <div class="col-4">
+                        <p>
+                          <i class="fas fa-star-of-life m-1"></i>
+                          <i class="fas fa-star-of-life m-1"></i>
+                          <i class="fas fa-star-of-life m-1"></i>
+                        </p>
+                      </div>
+                      <div class="col-4">
+                        <p>
+                          <i class="fas fa-star-of-life m-1"></i>
+                          <i class="fas fa-star-of-life m-1"></i>
+                          <i class="fas fa-star-of-life m-1"></i>
+                        </p>
+                      </div>
+                      <div class="col-4">
+                        <p>
+                          <i class="fas fa-star-of-life m-1"></i>
+                          <i class="fas fa-star-of-life m-1"></i>
+                          <i class="fas fa-star-of-life m-1"></i>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="mt-5">
+                      <h5 class="text-white float-end mb-0">12/22</h5>
+                      <h5 class="text-white mb-0">Fredrick Taylor</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title mb-3">Resumen orden</h4>
+
+                <div class="table-responsive">
+                  <table class="table mb-0">
+                    <tbody>
+                      <tr>
+                        <td>Sub-Total :</td>
+                        <td>S./ {{subtotal}}</td>
+                      </tr>
+                      <tr>
+                        <td>Descuento : </td>
+                        <td>S./ 0.0</td>
+                      </tr>
+                      <tr>
+                        <td>Adicional:</td>
+                        <td>S./ {{aditional}}</td>
+                      </tr>
+                      <tr>
+                        <td>Impuesto : </td>
+                        <td>S./ 0.0</td>
+                      </tr>
+                      <tr>
+                        <th>Total :</th>
+                        <th>S./ {{total}}</th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- end table-responsive -->
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+        </div>
+        <!-- end row -->
+
+      </div> <!-- container-fluid -->
+
+
+
+
+    </div>
+
+    <div class="modal-footer">
+      <div class="hstack gap-2 justify-content-end">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="modal.close('Close click')">
+          Seguir comprando
+        </button>
+        <button type="button" class="btn btn-success" id="add-btn" (click)="payBooking()">
+          Pagar
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-template>

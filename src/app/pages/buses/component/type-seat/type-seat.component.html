@@ -1,0 +1,117 @@
+<div class="col-sm-4"></div>
+<div class="col-sm-12">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="openModal(content)">
+            <i class="mdi mdi-plus mr-1"></i>Nuevo</button>
+    </div>
+</div><!-- end col-->
+
+<div class="row mb-2">
+    <div class="table-responsive mb-0">
+        <table class="table table-centered table-nowrap">
+            <thead class="table-light">
+                <tr>
+                    <th class="align-middle">ID</th>
+                    <th class="align-middle">Nombre</th>
+                    <th class="align-middle">Servicio Adicional</th>
+                    <th class="align-middle">Costo Adicional</th>
+                    <th class="align-middle">Estado</th>
+                    <th class="align-middle">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of typeSeatArray; let i=index;" id="o_{{data.id}}">
+                    <td>
+                        <a href="javascript: void(0);" class="text-body fw-bold">{{ i+1 }}</a>
+                    </td>
+                    <td>{{data.name}}</td>
+                    <td>{{data.serviceAdditional}}</td>
+                    <td>{{data.costAdditional}}</td>
+                    <td class="align-middle"><span [ngClass]="data.state ? 'badge bg-success' : 'badge bg-danger'">{{data.state}}</span></td>
+                    <td>
+                        <div class="d-flex gap-3">
+                            <a href="javascript:void(0);" class="text-success"
+                                (click)="openModal(content, data.id_type_seat)"><i
+                                    class="mdi mdi-pencil font-size-18"></i></a>
+                            <a href="javascript:void(0);" class="text-danger" (click)="deleteAlert(data.id_type_seat)"><i
+                                    class="mdi mdi-delete font-size-18"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+            <div class="col-sm-12 col-md-5">
+
+            </div>
+
+        </div>
+        <!-- Pagination -->
+
+    </div>
+</div>
+
+
+<ng-template #content typeSeat="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
+    </div>
+    <form [formGroup]="formTypeSeat">
+        <div class="modal-body">
+
+            <input class="form-control" type="hidden" formControlName="id_typeSeat">
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Nombre</label>
+                        <input class="form-control" type="text" placeholder="Ingrese nombre" formControlName="name">
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Servicio Adicional</label>
+                        <input class="form-control" type="text" placeholder="Ingrese servicio adicional" formControlName="serviceAdditional">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-lg-6">
+                    <div>
+                        <label class="form-label">Costo Adicional</label>
+                        <input class="form-control" type="text" placeholder="Ingrese costo adicional"
+                            formControlName="costAdditional">
+                    </div>
+                </div>
+                <div class="col-lg-6" *ngIf="!save">
+                    <div>
+                        <label class="form-label">Estado</label>
+                        <select id="formrow-inputState" class="form-control" formControlName="state"
+                            (change)="onChangeSelected($event)">
+                            <option [value]="true">Activo</option>
+                            <option [value]="false" selected>Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div class="modal-footer">
+            <div class="hstack gap-2 justify-content-end">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                    (click)="modal.close('Close click')">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-success" id="add-btn" (click)="saveTypeSeat()"
+                    [disabled]="formTypeSeat.invalid && formTypeSeat.touched">
+                    Registrar
+                </button>
+            </div>
+        </div>
+    </form>
+</ng-template>
